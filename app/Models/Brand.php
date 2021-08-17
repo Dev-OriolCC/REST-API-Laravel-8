@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\ApiTrait;
 
 class Brand extends Model
 {
-    use HasFactory;
+    use HasFactory, ApiTrait;
 
     // One to Many for products
     public function products() {

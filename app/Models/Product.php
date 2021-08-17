@@ -4,13 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\ApiTrait;
+
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, ApiTrait;
 
     const PUBLISHED = 2;
     const UNPUBLISHED = 1;
+
+    protected $fillable = [ 'name', 'description', 'price', 'color', 'status', 'category_id', 'brand_id' ];
     
     // One-to-Many inverse for brand
     public function brand() {
