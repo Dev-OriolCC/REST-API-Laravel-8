@@ -10,6 +10,8 @@ class Tag extends Model
 {
     use HasFactory, ApiTrait;
 
+    protected $fillable = ['name'];
+
     // Many-to-Many
     public function products() {
         return $this->belongsToMany(Product::class);

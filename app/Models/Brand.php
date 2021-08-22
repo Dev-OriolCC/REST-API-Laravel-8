@@ -10,6 +10,8 @@ class Brand extends Model
 {
     use HasFactory, ApiTrait;
 
+    protected $fillable = ['name', 'email', 'website'];
+
     // One to Many for products
     public function products() {
         return $this->hasMany(Product::class);

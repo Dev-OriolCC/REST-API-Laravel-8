@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
+use App\Models\Brand;
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
-
+use Dotenv\Validator;
 class ProductController extends Controller
 {
     // * Construct Method
@@ -20,11 +22,23 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        $products = Product::included()
-            ->filter()
-            ->sort()
-            ->getOrPaginate();
-        return ProductResource::collection($products);
+        // ? Check if atleast one category exits.
+        if (Category::all()->count() > 1) {
+            $products = Product::included()
+                ->filter()
+                ->sort()
+                ->getOrPaginate();
+                // if ($products->count() > 0) {
+                //     return response()->json([
+                //         'message' => 'No products found, Add a product.'
+                //     ]);
+                // }
+            return ProductResource::collection($products);
+        }
+        return response()->json([
+            'message' => 'No categories found, create a category at least.'
+        ]);
+
     }
 
     /**
@@ -34,16 +48,26 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
+        $categories = Category::all()->count();
+        $brands = Brand::all()->count();
+        // ? Validate categories & brands atleast 1 is created before store prod.
+        if ($categories === 0 || $brands === 0) {
+            return response()->json([
+                'message' => 'A category and brand must exist.'
+            ]);
+        }
         $request->validate([
             'name' => 'required|min:4|unique:products',
             'description' => 'required|min:6',
             'price' => 'required',
             'color' => 'required',
-            'category_id' => 'required|exits:categories,id',
-            'brand_id' => 'required|exits:brands,id'
+            'category_id' => 'required|exists:categories,id',
+            'brand_id' => 'required|exists:brands,id',
         ]);
         $product = Product::create($request->all());
+
         return ProductResource::make($product);
+        
     }
 
     /**

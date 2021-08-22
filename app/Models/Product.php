@@ -10,6 +10,11 @@ use App\Traits\ApiTrait;
 class Product extends Model
 {
     use HasFactory, ApiTrait;
+    // ? Properties to allow in the query scopes.
+    protected $allowIncluded = ['products', 'products.brands'];
+    protected $allowFilter = ['id', 'name'];
+    protected $allowSort = ['id', 'name'];
+
 
     const PUBLISHED = 2;
     const UNPUBLISHED = 1;
